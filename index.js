@@ -58,7 +58,7 @@ const renderTime = (time_1, time_2) => {
 let interval = 0;
 let start = 0;
 let split = 0;
-let flag = false;
+let pause = 0
 
 let display = document.getElementById("display");
 let times = document.getElementById("times");
@@ -73,14 +73,14 @@ const startStopwatch = () => {
 
 	start = new Date();
 	split = start;
-	flag = true;
-	const tick = () => {
-		const now = new Date();
 
+	const tick = () => {
+		let now = new Date();
+		
 		let totalTime = renderTime(start, now);
 		let splitTime = renderTime(split, now);
 		splitTime = splitTime[0].concat(splitTime[1]);
-
+		
 		if (split) {
 			display.innerHTML =
 				'<div class="time-largeText">' +
@@ -111,6 +111,19 @@ const stopStopwatch = () => {
 	if (interval) {
 		clearInterval(interval);
 		interval = 0;
+
+		pause = new Date();
+
+		let pauseTime = renderTime(split, pause);
+		pauseTime = pauseTime[0].concat(pauseTime[1]);
+
+		if (pause == 0) {
+			times.innerHTML += '<div class="split-times">' + "</div>";
+		} else {
+			times.innerHTML +=
+				'<div class="split-times">' + pauseTime + "<p>Pause</p></div>"; // add <p> here for split/pause
+		}
+
 		document.getElementById("start-button").style.display = "block";
 		document.getElementById("stop-button").style.display = "none";
 		document.getElementById("reset-button").disabled = false;
@@ -128,7 +141,8 @@ const splitTime = () => {
 		if (split == 0) {
 			times.innerHTML += '<div class="split-times">' + "</div>";
 		} else {
-			times.innerHTML += '<div class="split-times">' + time + "</div>"; // add <p> here for split/pause
+			times.innerHTML +=
+				'<div class="split-times">' + time + "<p>Split</p></div>"; // add <p> here for split/pause
 		}
 
 		split = now;

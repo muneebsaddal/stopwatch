@@ -16,17 +16,37 @@
 		<div id="splitTimes" class="split-heading">SPLIT TIME</div>
 
 		<div class="buttons">
-			<button class="start-button" onclick="startStopwatch()">
+			<button
+				id="start-button"
+				class="start-button"
+				onclick="startStopwatch()"
+			>
 				Start
 			</button>
-			<button class="stop-button" onclick="stopStopwatch()">Stop</button>
-			<button class="split-button" onclick="splitTime()">Split</button>
-			<button class="split-button" onclick="resetStopwatch()">
+			<button
+				id="stop-button"
+				class="stop-button"
+				onclick="stopStopwatch()"
+			>
+				Stop
+			</button>
+			<button
+				id="split-button"
+				class="split-button"
+				onclick="splitTime()"
+			>
+				Split
+			</button>
+			<button
+				id="reset-button"
+				class="reset-button"
+				onclick="resetStopwatch()"
+			>
 				Reset
 			</button>
 		</div>
 
-		<div id="times" class="times"></div>
+		<div id="times" class="times"><hr /></div>
 
 		<script src="index.js" type="text/javascript"></script>
 	</body>

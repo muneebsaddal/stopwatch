@@ -57,16 +57,23 @@ const renderTime = (time_1, time_2) => {
 
 let interval = 0;
 let start = 0;
-let split = null;
+let split = 0;
+let flag = false;
 
 let display = document.getElementById("display");
 let times = document.getElementById("times");
 let splitTimes = document.getElementById("splitTimes");
 
+document.getElementById("stop-button").style.display = "none";
+document.getElementById("reset-button").disabled = true;
+document.getElementById("split-button").disabled = true;
+
 const startStopwatch = () => {
 	if (interval) return;
-	start = new Date();
 
+	start = new Date();
+	split = start;
+	flag = true;
 	const tick = () => {
 		const now = new Date();
 
@@ -95,12 +102,19 @@ const startStopwatch = () => {
 		}
 	};
 	interval = setInterval(tick, 10);
+	document.getElementById("start-button").style.display = "none";
+	document.getElementById("stop-button").style.display = "block";
+	document.getElementById("split-button").disabled = false;
 };
 
 const stopStopwatch = () => {
 	if (interval) {
 		clearInterval(interval);
 		interval = 0;
+		document.getElementById("start-button").style.display = "block";
+		document.getElementById("stop-button").style.display = "none";
+		document.getElementById("reset-button").disabled = false;
+		document.getElementById("split-button").disabled = true;
 	}
 };
 
@@ -110,17 +124,11 @@ const splitTime = () => {
 
 		let timeStrings = renderTime(split, now);
 		let time = timeStrings[0].concat(timeStrings[1]);
-		
+
 		if (split == 0) {
-			times.innerHTML += '<div class="split-times">' + time + "</div>";
-			times.style.display = "block";
+			times.innerHTML += '<div class="split-times">' + "</div>";
 		} else {
-			if (time.length > 13) {
-				times.innerHTML += '<div class="split-times"></div>';
-			} else {
-				times.innerHTML +=
-					'<div class="split-times">' + time + "</div>";
-			}
+			times.innerHTML += '<div class="split-times">' + time + "</div>"; // add <p> here for split/pause
 		}
 
 		split = now;
@@ -144,4 +152,7 @@ const resetStopwatch = () => {
 		'<div class="time-smallText">' +
 		"00" +
 		"</div>";
+	document.getElementById("start-button").style.display = "block";
+	document.getElementById("stop-button").style.display = "none";
+	document.getElementById("reset-button").disabled = true;
 };

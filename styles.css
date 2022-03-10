@@ -1,6 +1,6 @@
 body {
 	background-color: #e5e5e5;
-	max-width: 50%;
+	box-sizing: border-box;
 	margin: 40px 80px;
 	font-family: "Inter", sans-serif;
 	font-family: "Karla", sans-serif;
@@ -16,7 +16,6 @@ p {
 	display: flex;
 	align-items: baseline;
 	justify-content: left;
-	height: 110px;
 	margin-bottom: 10px;
 }
 
@@ -24,7 +23,7 @@ p {
 	font-family: Inter;
 	font-style: normal;
 	font-weight: 500;
-	font-size: 90px;
+	font-size: 60px;
 	color: #1f1f1f;
 }
 
@@ -32,7 +31,7 @@ p {
 	font-family: Inter;
 	font-style: normal;
 	font-weight: 500;
-	font-size: 30px;
+	font-size: 10px;
 	color: #1f1f1f;
 }
 
@@ -54,15 +53,13 @@ p {
 .buttons button {
 	margin: 15px;
 	border-radius: 50%;
-	height: 90px;
-	width: 90px;
+	height: 60px;
+	width: 60px;
 	border: none;
-	/* background-color: #c4c4c4; */
 	font-family: "Karla";
-	font-style: normal;
+	font-style: bold;
 	font-weight: 400;
-	font-size: 20px;
-	line-height: 24px;
+	font-size: 14px;
 	align-content: center;
 }
 
@@ -74,7 +71,7 @@ p {
 	font-family: "Karla";
 	font-style: normal;
 	font-weight: 500;
-	font-size: 18px;
+	font-size: 14px;
 	line-height: 21px;
 }
 
@@ -94,11 +91,26 @@ p {
 	background-color: #6630FF;
 }
 
-hr {
-	margin-top: 40px;
-	width: 110%;
-}
-
 button:disabled {
 	background-color: #bdbdbd;
+}
+
+@media only screen and (min-width: 700px) {
+	.buttons {
+		flex-direction: row;
+	}
+	.time-largeText {
+		font-size: 90px;
+	}
+	.time-smallText {
+		font-size: 30px;
+	}
+	.buttons button {
+		height: 90px;
+		width: 90px;
+		font-size: 20px;
+	}
+	.split-times {
+		font-size: 18px;
+	}
 }

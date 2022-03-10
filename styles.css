@@ -1,18 +1,26 @@
 body {
+	background-color: #e5e5e5;
+	max-width:50%;
+	margin: 40px 80px;
     font-family: "Inter", sans-serif;
     font-family: "Karla", sans-serif;
+	display: flex;
+	flex-direction: column;
 }
 
 .display {
     display: flex;
+	align-items: baseline;
+	justify-content: left;
+	height: 110px;
+	margin-bottom: 10px;
 }
 
 .time-largeText {
     font-family: Inter;
 	font-style: normal;
 	font-weight: 500;
-	font-size: 72px;
-	line-height: 87px;
+	font-size: 90px;
 	color: #1f1f1f;
 }
 
@@ -21,6 +29,35 @@ body {
 	font-style: normal;
 	font-weight: 500;
 	font-size: 30px;
-	line-height: 36px;
 	color: #1f1f1f;
+}
+
+.split-heading {
+	margin-left: 10px;
+	font-family: 'Karla';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 30px;
+	line-height: 35px;
+}
+
+.buttons {
+	display: flex;
+	margin-top: 25px;
+	margin-left: 10px;
+}
+
+.buttons button {
+	margin: 15px;
+	border-radius: 50%;
+	height: 90px;
+	width: 90px;
+	border: none;
+	background-color: #c4c4c4;
+	font-family: 'Karla';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 20px;
+	line-height: 24px;
+	align-content: center;
 }

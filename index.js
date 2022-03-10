@@ -57,26 +57,20 @@ const renderTime = (time_1, time_2) => {
 
 let interval = 0;
 let start = 0;
-let split = 0;
+let split = null;
 
-const display = document.getElementById("display");
-const times = document.getElementById("times");
+let display = document.getElementById("display");
+let times = document.getElementById("times");
+let splitTimes = document.getElementById("splitTimes");
 
 const startStopwatch = () => {
 	if (interval) return;
-
 	start = new Date();
-
-	if (split) {
-		times.style.display = "none";
-		times.innerHTML = "";
-		split = null;
-	}
 
 	const tick = () => {
 		const now = new Date();
 
-		const totalTime = renderTime(start, now);
+		let totalTime = renderTime(start, now);
 		let splitTime = renderTime(split, now);
 		splitTime = splitTime[0].concat(splitTime[1]);
 
@@ -87,10 +81,9 @@ const startStopwatch = () => {
 				"</div>" +
 				'<div class="time-smallText">' +
 				totalTime[1] +
-				"</div>" +
-				'<div class="split-time">' +
-				splitTime +
 				"</div>";
+			splitTimes.innerHTML =
+				'<div class="split-heading">' + splitTime + "</div>";
 		} else {
 			display.innerHTML =
 				'<div class="time-largeText">' +
@@ -98,8 +91,7 @@ const startStopwatch = () => {
 				"</div>" +
 				'<div class="time-smallText">' +
 				totalTime[1] +
-				'</div>' +
-				'<div class="split-heading">Split Time</div>';
+				"</div>";
 		}
 	};
 	interval = setInterval(tick, 10);
@@ -108,7 +100,7 @@ const startStopwatch = () => {
 const stopStopwatch = () => {
 	if (interval) {
 		clearInterval(interval);
-		interval = null;
+		interval = 0;
 	}
 };
 
@@ -116,23 +108,40 @@ const splitTime = () => {
 	if (interval) {
 		const now = new Date();
 
-		let timeStrings = renderTime(split, now)
-		let time = timeStrings[0].concat(timeStrings[1])
-
-		if (split == null) {
-			times.innerHTML +=
-				'<div class="split-time">' + time + "</div>";
+		let timeStrings = renderTime(split, now);
+		let time = timeStrings[0].concat(timeStrings[1]);
+		
+		if (split == 0) {
+			times.innerHTML += '<div class="split-times">' + time + "</div>";
 			times.style.display = "block";
 		} else {
 			if (time.length > 13) {
-				times.innerHTML += '<div class="split-time"></div>'
-			}
-			else {
+				times.innerHTML += '<div class="split-times"></div>';
+			} else {
 				times.innerHTML +=
-					'<div class="split-time">' + time + "</div>";
+					'<div class="split-times">' + time + "</div>";
 			}
 		}
 
 		split = now;
 	}
+};
+
+const resetStopwatch = () => {
+	if (interval) {
+		clearInterval(interval);
+		interval = 0;
+		start = 0;
+		split = 0;
+	}
+	times.innerHTML = '<div class="split-times"></div>';
+	splitTimes.innerHTML =
+		'<div id="splitTimes" class="split-heading">SPLIT TIME</div>';
+	display.innerHTML =
+		'<div class="time-largeText">' +
+		"00:00:00.0" +
+		"</div>" +
+		'<div class="time-smallText">' +
+		"00" +
+		"</div>";
 };

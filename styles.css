@@ -1,0 +1,26 @@
+body {
+    font-family: "Inter", sans-serif;
+    font-family: "Karla", sans-serif;
+}
+
+.display {
+    display: flex;
+}
+
+.time-largeText {
+    font-family: Inter;
+	font-style: normal;
+	font-weight: 500;
+	font-size: 72px;
+	line-height: 87px;
+	color: #1f1f1f;
+}
+
+.time-smallText {
+    font-family: Inter;
+	font-style: normal;
+	font-weight: 500;
+	font-size: 30px;
+	line-height: 36px;
+	color: #1f1f1f;
+}

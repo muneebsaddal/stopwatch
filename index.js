@@ -24,11 +24,11 @@ const calculatePeriod = (time_1, time_2) => {
 };
 
 const padLeft = (number, length, character) => {
-	if (character == null) character = "0";
+	if (character == null) character = 0;
 
 	let result = number.toString();
 
-	for (let i = result.length; i <= length; i++) {
+	for (let i = result.length; i < length; i++) {
 		result = character + result;
 	}
 
@@ -49,7 +49,10 @@ const renderTime = (time_1, time_2) => {
 	text += padLeft(period.seconds, 2) + ":";
 	text += padLeft(period.milliseconds, 3);
 
-	return text;
+	const largeText = text.slice(0, 10);
+	const smallText = text.replace(largeText, "");
+
+	return [largeText, smallText];
 };
 
 let interval = 0;
@@ -73,19 +76,29 @@ const startStopwatch = () => {
 	const tick = () => {
 		const now = new Date();
 
+		const totalTime = renderTime(start, now);
+		let splitTime = renderTime(split, now);
+		splitTime = splitTime[0].concat(splitTime[1]);
+
 		if (split) {
 			display.innerHTML =
-				'<div class="total-time">' +
-				renderTime(start, now) +
+				'<div class="time-largeText">' +
+				totalTime[0] +
+				"</div>" +
+				'<div class="time-smallText">' +
+				totalTime[1] +
 				"</div>" +
 				'<div class="split-time">' +
-				renderTime(split, now) +
+				splitTime +
 				"</div>";
 		} else {
 			display.innerHTML =
-				'<div class="total-time">' +
-				renderTime(start, now) +
+				'<div class="time-largeText">' +
+				totalTime[0] +
 				"</div>" +
+				'<div class="time-smallText">' +
+				totalTime[1] +
+				'</div>' +
 				'<div class="split-heading">Split Time</div>';
 		}
 	};
@@ -103,13 +116,21 @@ const splitTime = () => {
 	if (interval) {
 		const now = new Date();
 
+		let timeStrings = renderTime(split, now)
+		let time = timeStrings[0].concat(timeStrings[1])
+
 		if (split == null) {
 			times.innerHTML +=
-				'<div class="split-time">' + renderTime(start, now) + "</div>";
+				'<div class="split-time">' + time + "</div>";
 			times.style.display = "block";
 		} else {
-			times.innerHTML +=
-				'<div class="split-time">' + renderTime(start, now) + "</div>";
+			if (time.length > 13) {
+				times.innerHTML += '<div class="split-time"></div>'
+			}
+			else {
+				times.innerHTML +=
+					'<div class="split-time">' + time + "</div>";
+			}
 		}
 
 		split = now;

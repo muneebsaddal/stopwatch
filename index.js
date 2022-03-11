@@ -1,172 +1,250 @@
-const calculatePeriod = (time_1, time_2) => {
-	let timeDiff = time_2 - time_1;
+let startButton = document.getElementById("startButton"),
+   stopButton = document.getElementById("stopButton"),
+   resetButton = document.getElementById("resetButton"),
+   flagButton = document.getElementById("flagButton"),
+   hoursCounter = document.getElementById("counter-h"),
+   minutesCounter = document.getElementById("counter-m"),
+   secondsCounter = document.getElementById("counter-s"),
+   msCounter = document.getElementById("counter-ms"),
+   altHoursCounter = document.getElementById("alt-counter-h"),
+   altMinutesCounter = document.getElementById("alt-counter-m"),
+   altSecondsCounter = document.getElementById("alt-counter-s"),
+   altMsCounter = document.getElementById("alt-counter-ms"),
+   hours = 0,
+   minutes = 0,
+   seconds = 0,
+   milliseconds = 0,
+   hoursSplit = 0,
+   minutesSplit = 0,
+   secondsSplit = 0,
+   millisecondsSplit = 0,
+   intHours = 0,
+   intMinutes = 0,
+   intSeconds = 0,
+   intMilliseconds = 0,
+   subHours = 0,
+   subMinutes = 0,
+   subSeconds = 0,
+   subMilliseconds = 0,
+   altHours = 0,
+   altMinutes = 0,
+   altSeconds = 0,
+   altMilliseconds = 0,
+   timeInterval,
+   splitTimeInterval,
+   flagsWrapper = document.getElementById("stopwatchFlags"),
+   flags = [];
 
-	const units = [
-		{ name: "milliseconds", scale: 1000 },
-		{ name: "seconds", scale: 60 },
-		{ name: "minutes", scale: 60 },
-		{ name: "hours", scale: 24 },
-	];
+startButton.addEventListener("click", () => {
+   clearInterval(timeInterval)
+   clearInterval(splitTimeInterval)
+   timeInterval = setInterval(startTimer, 10);
+   splitTimeInterval = setInterval(startSplitTimer, 10)
+});
+stopButton.addEventListener("click", stopTimer);
+resetButton.addEventListener("click", resetTimer);
+flagButton.addEventListener("click", flag);
 
-	const result = {};
+function startTimer() {
+   milliseconds++;
 
-	for (let i = 0; i < units.length; i++) {
-		const total = Math.floor(timeDiff / units[i].scale);
-		const rest = timeDiff - total * units[i].scale;
+   if (milliseconds <= 9) {
+      msCounter.innerHTML = "0" + milliseconds;
+   }
 
-		result[units[i].name] = rest;
-		timeDiff = total;
-	}
+   if (milliseconds > 9) {
+      msCounter.innerHTML = milliseconds;
+   }
 
-	result.days = timeDiff;
+   if (milliseconds > 99) {
+      milliseconds = 0;
+      msCounter.innerHTML = "0" + milliseconds;
+      seconds++;
+   }
 
-	return result;
-};
+   if (seconds <= 9) {
+      secondsCounter.innerHTML = "0" + seconds;
+   }
 
-const padLeft = (number, length, character) => {
-	if (character == null) character = 0;
+   if (seconds > 9) {
+      secondsCounter.innerHTML = seconds;
+   }
 
-	let result = number.toString();
+   if (seconds > 59) {
+      seconds = 0;
+      minutes++;
+   }
 
-	for (let i = result.length; i < length; i++) {
-		result = character + result;
-	}
+   if (minutes <= 9) {
+      minutesCounter.innerHTML = "0" + minutes;
+   }
 
-	return result;
-};
+   if (minutes > 9) {
+      minutesCounter.innerHTML = minutes;
+   }
 
-const renderTime = (time_1, time_2) => {
-	const period = calculatePeriod(time_1, time_2);
+   if (minutes > 59) {
+      minutes = 0;
+      hours++;
+   }
 
-	let text = "";
+   if (hours <= 9) {
+      hoursCounter.innerHTML = "0" + hours;
+   } else {
+      hoursCounter.innerHTML = hours;
+   }
+}
 
-	if (period.days) {
-		text += padLeft(period.days, 2) + " days ";
-	}
+function startSplitTimer() {
+   altMilliseconds++;
 
-	text += padLeft(period.hours, 2) + ":";
-	text += padLeft(period.minutes, 2) + ":";
-	text += padLeft(period.seconds, 2) + ":";
-	text += padLeft(period.milliseconds, 3);
+   if (altMilliseconds <= 9) {
+      altMsCounter.innerHTML = "0" + altMilliseconds;
+   }
 
-	const largeText = text.slice(0, 10);
-	const smallText = text.replace(largeText, "");
+   if (altMilliseconds > 9) {
+      altMsCounter.innerHTML = altMilliseconds;
+   }
 
-	return [largeText, smallText];
-};
+   if (altMilliseconds > 99) {
+      altMilliseconds = 0;
+      altMsCounter.innerHTML = "0" + altMilliseconds;
+      altSeconds++;
+   }
 
-let interval = 0;
-let start = 0;
-let split = 0;
-let pause = 0
+   if (altSeconds <= 9) {
+      altSecondsCounter.innerHTML = "0" + altSeconds;
+   }
 
-let display = document.getElementById("display");
-let times = document.getElementById("times");
-let splitTimes = document.getElementById("splitTimes");
+   if (altSeconds > 9) {
+      altSecondsCounter.innerHTML = altSeconds;
+   }
 
-document.getElementById("stop-button").style.display = "none";
-document.getElementById("reset-button").disabled = true;
-document.getElementById("split-button").disabled = true;
+   if (altSeconds > 59) {
+      altSeconds = 0;
+      altMinutes++;
+   }
 
-const startStopwatch = () => {
-	if (interval) return;
+   if (altMinutes <= 9) {
+      altMinutesCounter.innerHTML = "0" + altMinutes;
+   }
 
-	start = new Date();
-	split = start;
+   if (altMinutes > 9) {
+      altMinutesCounter.innerHTML = altMinutes;
+   }
 
-	const tick = () => {
-		let now = new Date();
-		
-		let totalTime = renderTime(start, now);
-		let splitTime = renderTime(split, now);
-		splitTime = splitTime[0].concat(splitTime[1]);
-		
-		if (split) {
-			display.innerHTML =
-				'<div class="time-largeText">' +
-				totalTime[0] +
-				"</div>" +
-				'<div class="time-smallText">' +
-				totalTime[1] +
-				"</div>";
-			splitTimes.innerHTML =
-				'<div class="split-heading">' + splitTime + "</div>";
-		} else {
-			display.innerHTML =
-				'<div class="time-largeText">' +
-				totalTime[0] +
-				"</div>" +
-				'<div class="time-smallText">' +
-				totalTime[1] +
-				"</div>";
-		}
-	};
-	interval = setInterval(tick, 10);
-	document.getElementById("start-button").style.display = "none";
-	document.getElementById("stop-button").style.display = "block";
-	document.getElementById("split-button").disabled = false;
-};
+   if (altMinutes > 59) {
+      altMinutes = 0;
+      altHours++;
+   }
 
-const stopStopwatch = () => {
-	if (interval) {
-		clearInterval(interval);
-		interval = 0;
+   if (altHours <= 9) {
+      altHoursCounter.innerHTML = "0" + altHours;
+   } else {
+      altHoursCounter.innerHTML = altHours;
+   }
+}
 
-		pause = new Date();
+function stopTimer() {
+   let flagTime = `${hoursCounter.innerHTML}:${minutesCounter.innerHTML}:${secondsCounter.innerHTML}.${msCounter.innerHTML} Pause`;
+   console.log(flagTime)
+   if (flagTime != "00:00:00.00" && !flags.includes(flagTime)) {
+      flags.push(flagTime);
+      appendFlagToDOM(flagTime);
+   }
+   clearInterval(timeInterval);
+   clearInterval(splitTimeInterval);
+}
 
-		let pauseTime = renderTime(split, pause);
-		pauseTime = pauseTime[0].concat(pauseTime[1]);
+function resetTimer() {
+   clearInterval(timeInterval);
+   hours = 0;
+   minutes = 0;
+   seconds = 0;
+   milliseconds = 0;
+   hoursCounter.innerHTML = "0" + hours;
+   minutesCounter.innerHTML = "0" + minutes;
+   secondsCounter.innerHTML = "0" + seconds;
+   msCounter.innerHTML = "0" + milliseconds;
 
-		if (pause == 0) {
-			times.innerHTML += '<div class="split-times">' + "</div>";
-		} else {
-			times.innerHTML +=
-				'<div class="split-times">' + pauseTime + "<p>Pause</p></div>"; // add <p> here for split/pause
-		}
+   clearInterval(splitTimeInterval);
+   altHours = 0;
+   altMinutes = 0;
+   altSeconds = 0;
+   altMilliseconds = 0;
+   altHoursCounter.innerHTML = "0" + altHours;
+   altMinutesCounter.innerHTML = "0" + altMinutes;
+   altSecondsCounter.innerHTML = "0" + altSeconds;
+   altMsCounter.innerHTML = "0" + altMilliseconds;
+   flags = [];
+   flagsWrapper.innerHTML = "";
+}
 
-		document.getElementById("start-button").style.display = "block";
-		document.getElementById("stop-button").style.display = "none";
-		document.getElementById("reset-button").disabled = false;
-		document.getElementById("split-button").disabled = true;
-	}
-};
+function flag() {
 
-const splitTime = () => {
-	if (interval) {
-		const now = new Date();
+   intHours = parseInt(hoursCounter.innerHTML)
+   intMinutes = parseInt(minutesCounter.innerHTML)
+   intSeconds = parseInt(secondsCounter.innerHTML)
+   intMilliseconds = parseInt(msCounter.innerHTML)
 
-		let timeStrings = renderTime(split, now);
-		let time = timeStrings[0].concat(timeStrings[1]);
+   subHours = intHours - hoursSplit
+   subMinutes = intMinutes - minutesSplit
+   subSeconds = intSeconds - secondsSplit
+   subMilliseconds = intMilliseconds - millisecondsSplit
 
-		if (split == 0) {
-			times.innerHTML += '<div class="split-times">' + "</div>";
-		} else {
-			times.innerHTML +=
-				'<div class="split-times">' + time + "<p>Split</p></div>"; // add <p> here for split/pause
-		}
+   if (subMilliseconds < 0) {
+      subMilliseconds = subMilliseconds + 100
+      subSeconds--
+   }
+   if (subSeconds < 0) {
+      subSeconds = subSeconds + 60
+      subMinutes--
+   }
+   if (subMinutes < 0) {
+      subMinutes = subMinutes + 60
+      subHours--
+   }
+   if (subHours < 0) {
+      subHours = subHours + 12
+   }
 
-		split = now;
-	}
-};
+   let flagTime = `${subHours
+      }:${subMinutes
+      }:${subSeconds
+      }.${subMilliseconds
+      } Split`;
 
-const resetStopwatch = () => {
-	if (interval) {
-		clearInterval(interval);
-		interval = 0;
-		start = 0;
-		split = 0;
-	}
-	times.innerHTML = '<div class="split-times"></div>';
-	splitTimes.innerHTML =
-		'<div id="splitTimes" class="split-heading">SPLIT TIME</div>';
-	display.innerHTML =
-		'<div class="time-largeText">' +
-		"00:00:00.0" +
-		"</div>" +
-		'<div class="time-smallText">' +
-		"00" +
-		"</div>";
-	document.getElementById("start-button").style.display = "block";
-	document.getElementById("stop-button").style.display = "none";
-	document.getElementById("reset-button").disabled = true;
-};
+   millisecondsSplit = intMilliseconds
+   secondsSplit = intSeconds
+   minutesSplit = intMinutes
+   hoursSplit = intHours
+
+   console.log(flagTime)
+   if (flagTime != "00:00:00.00" && !flags.includes(flagTime)) {
+      flags.push(flagTime);
+      appendFlagToDOM(flagTime);
+   }
+
+   clearInterval(splitTimeInterval);
+   altHours = 0;
+   altMinutes = 0;
+   altSeconds = 0;
+   altMilliseconds = 0;
+   altMinutesCounter.innerHTML = "0" + altMinutes;
+   altSecondsCounter.innerHTML = "0" + altSeconds;
+   altMsCounter.innerHTML = "0" + altMilliseconds;
+   altHoursCounter.innerHTML = "0" + altHours;
+   splitTimeInterval = setInterval(startSplitTimer, 10)
+
+}
+
+function appendFlagToDOM(flagTime) {
+   let newFlag = document.createElement("div");
+   newFlag.classList.add("flag");
+   newFlag.innerHTML = `
+         <div class="flag__index">${flags.length}</div>
+         <div class="flag__time">${flagTime}</div>
+      `;
+   flagsWrapper.appendChild(newFlag);
+   flagsWrapper.scrollTop = flagsWrapper.scrollHeight;
+}

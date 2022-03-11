@@ -1,53 +1,69 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Stop Watch</title>
-		<link
-			href="https://fonts.googleapis.com/css2?family=Inter:wght@200;500&family=Karla:wght@200;400&display=swap"
-			rel="stylesheet"
-		/>
-		<link rel="stylesheet" type="text/css" href="styles.css" />
+		<title>Document</title>
+		<link rel="stylesheet" href="styles.css" />
 	</head>
 	<body>
-		<div id="display" class="display">
-			<div class="time-largeText">00:00:00.0</div>
-			<div class="time-smallText">00</div>
+		<div class="stopwatch">
+			<div class="stopwatch__inner">
+				<div id="stopwatchFlags" class="stopwatchFlags">
+					<!-- <div class="flag">
+                  <div class="flag__index">1</div>
+                  <div class="flag__time">0:00:00.00</div>
+               </div> -->
+				</div>
+				<div class="stopwatch-main">
+					<div id="counter-h" class="counter counter-h counter-colon">
+						00
+					</div>
+					<div id="counter-m" class="counter counter-m counter-colon">
+						00
+					</div>
+					<div id="counter-s" class="counter counter-s counter-dot">
+						00
+					</div>
+					<div id="counter-ms" class="counter counter-ms">00</div>
+				</div>
+				<div class="stopwatch-alt">
+					<div
+						id="alt-counter-h"
+						class="counter counter-h counter-colon"
+					>
+						00
+					</div>
+					<div
+						id="alt-counter-m"
+						class="counter counter-m counter-colon"
+					>
+						00
+					</div>
+					<div
+						id="alt-counter-s"
+						class="counter counter-s counter-dot"
+					>
+						00
+					</div>
+					<div id="alt-counter-ms" class="counter counter-ms">00</div>
+				</div>
+				<div class="stopwatch__controls">
+					<button class="stopwatch__button" id="startButton">
+						&#9654;
+					</button>
+					<button class="stopwatch__button" id="stopButton">
+						&#9724;
+					</button>
+					<button class="stopwatch__button" id="resetButton">
+						&#128465;
+					</button>
+					<button class="stopwatch__button" id="flagButton">
+						&#9873;
+					</button>
+					<!-- <button class="stopwatch__button"></button> -->
+				</div>
+			</div>
 		</div>
-		<div id="splitTimes" class="split-heading">SPLIT TIME</div>
 
-		<div class="buttons">
-			<button
-				id="start-button"
-				class="start-button"
-				onclick="startStopwatch()"
-			>
-				Start
-			</button>
-			<button
-				id="stop-button"
-				class="stop-button"
-				onclick="stopStopwatch()"
-			>
-				Stop
-			</button>
-			<button
-				id="split-button"
-				class="split-button"
-				onclick="splitTime()"
-			>
-				Split
-			</button>
-			<button
-				id="reset-button"
-				class="reset-button"
-				onclick="resetStopwatch()"
-			>
-				Reset
-			</button>
-		</div>
-
-		<div id="times" class="times"><hr /></div>
-
-		<script src="index.js" type="text/javascript"></script>
+		<script src="script.js"></script>
 	</body>
 </html>

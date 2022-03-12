@@ -1,0 +1,144 @@
+body {
+	box-sizing: border-box;
+	margin: 0;
+	font-family: "Inter", sans-serif;
+	font-family: "Karla", sans-serif;
+	background: #e5e5e5;
+	overflow: hidden;
+}
+
+/* width */
+::-webkit-scrollbar {
+	width: 10px;
+	border-radius: 30px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+	background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+	background: #888;
+	border-radius: 30px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+	background: #555; 
+  }
+
+.stopwatch-inner {
+	padding-left: 80px;
+	padding-top: 50px;
+}
+
+.stopwatch-main {
+	display: flex;
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 500;
+	font-size: 72px;
+	color: #1f1f1f;
+}
+
+.splitTime-heading {
+	display: flex;
+	padding-left: 20px;
+	padding-top: 10px;
+	font-family: "Karla";
+	font-style: normal;
+	font-weight: 400;
+	font-size: 30px;
+	color: #252525;
+}
+
+.stopwatch-alt {
+	display: none;
+	padding-left: 20px;
+	padding-top: 10px;
+	font-family: "Karla";
+	font-weight: 400;
+	font-size: 30px;
+	color: #252525;
+}
+
+.stopwatch-controls {
+	padding-left: 30px;
+	padding-top: 30px;
+}
+
+.stopwatch-controls button {
+	width: 90px;
+	height: 90px;
+	border-radius: 50%;
+	margin: 10px;
+	border: none;
+	font-family: "Inter";
+	font-weight: 400;
+	font-size: 18px;
+}
+
+.stop-button {
+	display: none;
+	background: #f82f2f;
+}
+
+.start-button {
+	background: #2F8CF8;
+}
+
+.split-button {
+	background: #ffc52f;
+}
+
+.reset-button {
+	background: #6630ff;
+}
+
+button[disabled=disabled], button:disabled {
+    background: #C9C9C9;
+}
+
+.stopwatchsplits{
+	background-color: #e5e5e5;
+	border-radius: 5px;
+	border: 1px;
+	margin-top: 20px;
+	margin-bottom: 10px;
+	overflow-y: auto;
+	height:360px;
+	width: 50%;
+	padding: 20px 40px 20px 40px;
+}
+
+.split {
+	display: flex;
+	justify-content: space-between;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+@media only screen and (max-width: 700px) {
+	.stopwatch-inner {
+		padding-left: 40px;
+		padding-top: 25px;
+	}
+	.column {
+		display: flex;
+	}
+	.stopwatch-controls {
+		display: flex;
+		flex-direction: column;
+		padding-left: 10px;
+		padding-top: 20px;
+	}
+	.stopwatchsplits {
+		padding: 20px 10px 10px 40px;
+		margin: 40px 10px 20px 50px;
+		border-left: 1px solid rgba(87, 87, 87, 0.219);
+		overflow-y: auto;
+		height: 270px;
+	}
+  }

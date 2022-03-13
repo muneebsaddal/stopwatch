@@ -245,6 +245,22 @@ function split() {
 		subHours = subHours + 12;
 	}
 
+	if (subHours < 9) {
+		subHours = "0" + subHours 
+	}
+
+	if (subMinutes < 9) {
+		subMinutes = "0" + subMinutes 
+	}
+
+	if (subSeconds < 9) {
+		subSeconds = "0" + subSeconds 
+	}
+
+	if (subMilliseconds < 9) {
+		subMilliseconds = "0" + subMilliseconds 
+	}
+
 	let splitTime = `${subHours}:${subMinutes}:${subSeconds}.${subMilliseconds}`;
 	let splitType = "Split"
 

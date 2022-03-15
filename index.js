@@ -30,16 +30,22 @@ let startButton = document.getElementById("startButton"),
 	altMinutes = 0,
 	altSeconds = 0,
 	altMilliseconds = 0,
+	pauseHours = 0,
+	pauseMinutes = 0,
+	pauseSeconds = 0,
+	pauseMilliseconds = 0,
+	pauseCount = 0,
 	timeInterval,
 	splitTimeInterval,
+	pauseInterval,
 	splitsWrapper = document.getElementById("stopwatchsplits"),
 	splits = [],
 	splitFlag = false,
-	startButtonFlag = true;
+	startButtonFlag = true,
+	interval = 0;
 
 startButton.addEventListener("click", () => {
-	
-	startButtonFlag = false
+	startButtonFlag = false;
 	if (startButtonFlag == false) {
 		document.getElementById("startButton").style.display = "none";
 		document.getElementById("stopButton").style.display = "inline";
@@ -48,7 +54,7 @@ startButton.addEventListener("click", () => {
 
 	clearInterval(timeInterval);
 	clearInterval(splitTimeInterval);
-	
+
 	timeInterval = setInterval(startTimer, 10);
 	splitTimeInterval = setInterval(startSplitTimer, 10);
 });
@@ -56,21 +62,57 @@ stopButton.addEventListener("click", stopTimer);
 resetButton.addEventListener("click", resetTimer);
 splitButton.addEventListener("click", split);
 
+// function subtractTimes(h, min, sec, ms) {
+// 	if (ms < 0) {
+// 		ms = ms + 1000;
+// 		sec = sec - 1;
+// 	}
+// 	if (sec < 0) {
+// 		sec = sec + 60;
+// 		min = min - 1;
+// 	}
+// 	if (min < 0) {
+// 		min = min + 60;
+// 		h = h - 1;
+// 	}
+// 	if (h < 0) {
+// 		h = h + 24;
+// 	} else if (h > 0) {
+// 		h = h;
+// 	} else {
+// 		h = 0;
+// 	}
+
+// 	return {
+// 		h,
+// 		min,
+// 		sec,
+// 		ms,
+// 	};
+// }
+
+let start = new Date();
+let current = new Date();
+
 function startTimer() {
-	milliseconds++;
+	
+	let count = +current - +start;
+
+	if (interval > 0) {
+		let temp_0 = count - pauseCount;
+		count = count - temp_0;
+	}
+
+	milliseconds = count % 1000;
+	seconds = Math.floor(count / 1000) % 60;
+	minutes = Math.floor(count / 60000) % 60;
+	hours = Math.floor(count / 3600000) % 24;
 
 	if (milliseconds <= 9) {
 		msCounter.innerHTML = "0" + milliseconds;
 	}
-
 	if (milliseconds > 9) {
 		msCounter.innerHTML = milliseconds;
-	}
-
-	if (milliseconds > 99) {
-		milliseconds = 0;
-		msCounter.innerHTML = "0" + milliseconds;
-		seconds++;
 	}
 
 	if (seconds <= 9) {
@@ -81,22 +123,12 @@ function startTimer() {
 		secondsCounter.innerHTML = seconds;
 	}
 
-	if (seconds > 59) {
-		seconds = 0;
-		minutes++;
-	}
-
 	if (minutes <= 9) {
 		minutesCounter.innerHTML = "0" + minutes;
 	}
 
 	if (minutes > 9) {
 		minutesCounter.innerHTML = minutes;
-	}
-
-	if (minutes > 59) {
-		minutes = 0;
-		hours++;
 	}
 
 	if (hours <= 9) {
@@ -156,9 +188,13 @@ function startSplitTimer() {
 	}
 }
 
-function stopTimer() {
+function pauseTimer() {
+	let pauseCurrent = new Date();
+	pauseCount = +pauseCurrent - +start;
+}
 
-	startButtonFlag = true
+function stopTimer() {
+	startButtonFlag = true;
 	if (startButtonFlag == true) {
 		document.getElementById("startButton").style.display = "inline";
 		document.getElementById("stopButton").style.display = "none";
@@ -167,20 +203,31 @@ function stopTimer() {
 	}
 
 	let splitTime = `${hoursCounter.innerHTML}:${minutesCounter.innerHTML}:${secondsCounter.innerHTML}.${msCounter.innerHTML}`;
-	let splitType = "Pause"
+	let splitType = "Pause";
 
 	if (splitTime != "00:00:00.00" && !splits.includes(splitTime)) {
 		splits.push(splitTime);
 		appendsplitToDOM(splitTime, splitType);
 	}
+
+	interval++;
+
+	clearInterval(pauseInterval);
+	pauseInterval = setInterval(pauseTimer, 10);
+
+	// pauseHours = hoursCounter.innerHTML;
+	// pauseMinutes = minutesCounter.innerHTML;
+	// pauseSeconds = secondsCounter.innerHTML;
+	// pauseMilliseconds = msCounter.innerHTML;
+
 	clearInterval(timeInterval);
 	clearInterval(splitTimeInterval);
 }
 
 function resetTimer() {
-
 	document.getElementById("resetButton").disabled = true;
-	document.getElementById("stopwatchsplits").style.backgroundColor = "#e5e5e5"
+	document.getElementById("stopwatchsplits").style.backgroundColor =
+		"#e5e5e5";
 
 	clearInterval(timeInterval);
 	hours = 0;
@@ -216,7 +263,8 @@ function split() {
 	if (splitFlag == true) {
 		document.getElementById("stopwatch-alt").style.display = "flex";
 		document.getElementById("splitTime-heading").style.display = "none";
-		document.getElementById("stopwatchsplits").style.backgroundColor = "white"
+		document.getElementById("stopwatchsplits").style.backgroundColor =
+			"white";
 	}
 
 	intHours = parseInt(hoursCounter.innerHTML);
@@ -246,35 +294,34 @@ function split() {
 	}
 
 	if (subHours < 9) {
-		subHours = "0" + subHours 
+		subHours = "0" + subHours;
 	}
 
 	if (subMinutes < 9) {
-		subMinutes = "0" + subMinutes 
+		subMinutes = "0" + subMinutes;
 	}
 
 	if (subSeconds < 9) {
-		subSeconds = "0" + subSeconds 
+		subSeconds = "0" + subSeconds;
 	}
 
 	if (subMilliseconds < 9) {
-		subMilliseconds = "0" + subMilliseconds 
+		subMilliseconds = "0" + subMilliseconds;
 	}
 
 	let splitTime = `${subHours}:${subMinutes}:${subSeconds}.${subMilliseconds}`;
-	let splitType = "Split"
+	let splitType = "Split";
 
 	millisecondsSplit = intMilliseconds;
 	secondsSplit = intSeconds;
 	minutesSplit = intMinutes;
 	hoursSplit = intHours;
 
-	
 	if (splitTime != "00:00:00.00" && !splits.includes(splitTime)) {
 		splits.push(splitTime);
 		appendsplitToDOM(splitTime, splitType);
 	}
-	
+
 	clearInterval(splitTimeInterval);
 	altHours = 0;
 	altMinutes = 0;

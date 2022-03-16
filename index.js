@@ -4,10 +4,9 @@ const splitTimeHeading = document.getElementById("splitTime-heading");
 const mainButton = document.getElementById("mainButton");
 const splitButton = document.getElementById("splitButton");
 const resetButton = document.getElementById("resetButton");
+const splitsWrapper = document.getElementById("stopwatchsplits");
 const stopwatch = { elapsedTime: 0 };
 const splitwatch = { elapsedTime: 0 };
-let splitwatchValue = 0;
-const splitsWrapper = document.getElementById("stopwatchsplits");
 let count = 1;
 
 mainButton.addEventListener("click", () => {
@@ -19,9 +18,7 @@ mainButton.addEventListener("click", () => {
 		resetButton.disabled = true;
 	} else {
 		stopwatch.elapsedTime += Date.now() - stopwatch.startTime;
-
 		clearInterval(stopwatch.intervalId);
-
 		mainButton.innerHTML = "Start";
 		mainButton.style.backgroundColor = "#2F8CF8";
 		splitButton.disabled = true;
@@ -38,21 +35,24 @@ splitButton.addEventListener("click", () => {
 		splitTimeHeading.style.display = "none";
 		splitTime.style.display = "block";
 		startSplitwatch();
-		appendsplitToDOM(splitwatchValue, "Split");
+		appendsplitToDOM(splitwatch.elapsedTime, "Split");
 	}
 });
 
 resetButton.addEventListener("click", () => {
+	clearInterval(splitwatch.intervalId);
 	stopwatch.elapsedTime = 0;
 	stopwatch.startTime = Date.now();
-	splitwatch.elapsedTime= 0
-	splitwatch.startTime = Date.now()
+	splitwatch.elapsedTime = 0;
+	splitwatch.startTime = Date.now();
 	displayTime(0, 0, 0, 0, time);
 	displayTime(0, 0, 0, 0, splitTime);
+
 	count = 1;
 	splitsWrapper.innerHTML = "";
 	document.getElementById("stopwatchsplits").style.backgroundColor =
 		"#e5e5e5";
+	resetButton.disabled = true;
 });
 
 function startStopwatch() {
@@ -65,19 +65,19 @@ function startStopwatch() {
 		const minutes = parseInt((elapsedTime / (1000 * 60)) % 60);
 		const hour = parseInt((elapsedTime / (1000 * 60 * 60)) % 24);
 		displayTime(hour, minutes, seconds, milliseconds, time);
-	}, 100);
+	}, 1);
 }
 
 function startSplitwatch() {
 	splitwatch.startTime = Date.now();
 	splitwatch.intervalId = setInterval(() => {
-		splitwatchValue = Date.now() - splitwatch.startTime;
-		const milliseconds = parseInt(splitwatchValue % 1000);
-		const seconds = parseInt((splitwatchValue / 1000) % 60);
-		const minutes = parseInt((splitwatchValue / (1000 * 60)) % 60);
-		const hour = parseInt((splitwatchValue / (1000 * 60 * 60)) % 24);
+		splitwatch.elapsedTime = Date.now() - splitwatch.startTime;
+		const milliseconds = parseInt(splitwatch.elapsedTime % 1000);
+		const seconds = parseInt((splitwatch.elapsedTime / 1000) % 60);
+		const minutes = parseInt((splitwatch.elapsedTime / (1000 * 60)) % 60);
+		const hour = parseInt((splitwatch.elapsedTime / (1000 * 60 * 60)) % 24);
 		displayTime(hour, minutes, seconds, milliseconds, splitTime);
-	}, 100);
+	}, 1);
 }
 
 function displayTime(hour, minutes, seconds, milliseconds, display) {
@@ -88,8 +88,6 @@ function displayTime(hour, minutes, seconds, milliseconds, display) {
 }
 
 function appendsplitToDOM(elapsedTime, splitType) {
-	document.getElementById("stopwatchsplits").style.backgroundColor = "white";
-
 	let milliseconds = parseInt(elapsedTime % 1000);
 	let seconds = parseInt((elapsedTime / 1000) % 60);
 	let minutes = parseInt((elapsedTime / (1000 * 60)) % 60);
@@ -102,14 +100,19 @@ function appendsplitToDOM(elapsedTime, splitType) {
 
 	const splitTime = `${hour}:${minutes}:${seconds}.${milliseconds}`;
 
-	let newsplit = document.createElement("div");
-	newsplit.classList.add("split");
-	newsplit.innerHTML = `
-         <div id="split-index" class="split-index">${count}</div>
-         <div id="split-time" class="split-time">${splitTime}</div>
-		 <div id="split-type" class="split-type">${splitType}</div>
-      `;
-	splitsWrapper.appendChild(newsplit);
-	splitsWrapper.scrollTop = splitsWrapper.scrollHeight;
-	count++;
+	if (splitTime == "00:00:00.00") {
+	} else {
+		document.getElementById("stopwatchsplits").style.backgroundColor =
+			"white";
+		let newsplit = document.createElement("div");
+		newsplit.classList.add("split");
+		newsplit.innerHTML = `
+			 <div id="split-index" class="split-index">${count}</div>
+			 <div id="split-time" class="split-time">${splitTime}</div>
+			 <div id="split-type" class="split-type">${splitType}</div>
+		  `;
+		splitsWrapper.appendChild(newsplit);
+		splitsWrapper.scrollTop = splitsWrapper.scrollHeight;
+		count++;
+	}
 }

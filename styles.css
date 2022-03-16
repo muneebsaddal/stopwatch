@@ -54,7 +54,17 @@ body {
 	color: #252525;
 }
 
-.stopwatch-alt {
+.split-watch {
+	display: none;
+	padding-left: 20px;
+	padding-top: 10px;
+	font-family: "Karla";
+	font-weight: 400;
+	font-size: 30px;
+	color: #252525;
+}
+
+.splitwatch-reset {
 	display: none;
 	padding-left: 20px;
 	padding-top: 10px;

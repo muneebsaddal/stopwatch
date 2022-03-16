@@ -1,196 +1,79 @@
-let startButton = document.getElementById("startButton"),
-	stopButton = document.getElementById("stopButton"),
-	resetButton = document.getElementById("resetButton"),
-	splitButton = document.getElementById("splitButton"),
-	hoursCounter = document.getElementById("counter-h"),
-	minutesCounter = document.getElementById("counter-m"),
-	secondsCounter = document.getElementById("counter-s"),
-	msCounter = document.getElementById("counter-ms"),
-	altHoursCounter = document.getElementById("alt-counter-h"),
-	altMinutesCounter = document.getElementById("alt-counter-m"),
-	altSecondsCounter = document.getElementById("alt-counter-s"),
-	altMsCounter = document.getElementById("alt-counter-ms"),
-	hours = 0,
-	minutes = 0,
-	seconds = 0,
-	milliseconds = 0,
-	hoursSplit = 0,
-	minutesSplit = 0,
-	secondsSplit = 0,
-	millisecondsSplit = 0,
-	intHours = 0,
-	intMinutes = 0,
-	intSeconds = 0,
-	intMilliseconds = 0,
-	subHours = 0,
-	subMinutes = 0,
-	subSeconds = 0,
-	subMilliseconds = 0,
-	altHours = 0,
-	altMinutes = 0,
-	altSeconds = 0,
-	altMilliseconds = 0,
-	pauseHours = 0,
-	pauseMinutes = 0,
-	pauseSeconds = 0,
-	pauseMilliseconds = 0,
-	pauseCount = 0,
-	timeInterval,
-	splitTimeInterval,
-	pauseInterval,
-	splitsWrapper = document.getElementById("stopwatchsplits"),
-	splits = [],
-	splitFlag = false,
-	startButtonFlag = true,
-	interval = 0;
+const time = document.getElementById("stopwatch");
+const splitTime = document.getElementById("splitwatch");
+const splitTimeHeading = document.getElementById("splitTime-heading");
+const mainButton = document.getElementById("mainButton");
+const splitButton = document.getElementById("splitButton");
+const resetButton = document.getElementById("resetButton");
+const stopwatch = { elapsedTime: 0 };
+const splitwatch = { elapsedTime: 0 };
+const splitsWrapper = document.getElementById("stopwatchsplits")
 
-startButton.addEventListener("click", () => {
-	startButtonFlag = false;
-	if (startButtonFlag == false) {
-		document.getElementById("startButton").style.display = "none";
-		document.getElementById("stopButton").style.display = "inline";
-		document.getElementById("splitButton").disabled = false;
+mainButton.addEventListener("click", () => {
+	if (mainButton.innerHTML === "Start") {
+		startStopwatch();
+		// startSplitwatch();
+		mainButton.innerHTML = "Stop";
+		mainButton.style.backgroundColor = "#f82f2f";
+		splitButton.disabled = false;
+	} else {
+		stopwatch.elapsedTime += Date.now() - stopwatch.startTime;
+		// splitwatch.elapsedTime += Date.now() - splitwatch.startTime;
+		clearInterval(stopwatch.intervalId);
+		// clearInterval(splitwatch.intervalId);
+		mainButton.innerHTML = "Start";
+		mainButton.style.backgroundColor = "#2F8CF8";
+		splitButton.disabled = true;
+		resetButton.disabled = false;
+		appendsplitToDOM(stopwatch.elapsedTime, "Pause")
 	}
-
-	clearInterval(timeInterval);
-	clearInterval(splitTimeInterval);
-
-	timeInterval = setInterval(startTimer, 10);
-	splitTimeInterval = setInterval(startSplitTimer, 10);
 });
-stopButton.addEventListener("click", stopTimer);
-resetButton.addEventListener("click", resetTimer);
-splitButton.addEventListener("click", split);
 
-// function subtractTimes(h, min, sec, ms) {
-// 	if (ms < 0) {
-// 		ms = ms + 1000;
-// 		sec = sec - 1;
-// 	}
-// 	if (sec < 0) {
-// 		sec = sec + 60;
-// 		min = min - 1;
-// 	}
-// 	if (min < 0) {
-// 		min = min + 60;
-// 		h = h - 1;
-// 	}
-// 	if (h < 0) {
-// 		h = h + 24;
-// 	} else if (h > 0) {
-// 		h = h;
-// 	} else {
-// 		h = 0;
-// 	}
+// splitButton.addEventListener("click", () => {
+// 	splitTimeHeading.style.display = "none";
+// 	splitTime.style.display = "block";
+// 	startSplitwatch();
+// });
 
-// 	return {
-// 		h,
-// 		min,
-// 		sec,
-// 		ms,
-// 	};
+resetButton.addEventListener("click", () => {
+	stopwatch.elapsedTime = 0;
+	stopwatch.startTime = Date.now();
+	displayTime(0, 0, 0, 0, time);
+	// displayTime(0, 0, 0, 0, splitTime);
+	splitsWrapper.innerHTML = "";
+	document.getElementById("stopwatchsplits").style.backgroundColor ="#e5e5e5";
+});
+
+function startStopwatch() {
+	stopwatch.startTime = Date.now();
+	stopwatch.intervalId = setInterval(() => {
+		const elapsedTime =
+			Date.now() - stopwatch.startTime + stopwatch.elapsedTime;
+		const milliseconds = parseInt(elapsedTime % 1000);
+		const seconds = parseInt((elapsedTime / 1000) % 60);
+		const minutes = parseInt((elapsedTime / (1000 * 60)) % 60);
+		const hour = parseInt((elapsedTime / (1000 * 60 * 60)) % 24);
+		displayTime(hour, minutes, seconds, milliseconds, time);
+	}, 100);
+}
+
+// function startSplitwatch() {
+// 	splitwatch.startTime = Date.now();
+// 	splitwatch.intervalId = setInterval(() => {
+// 		const elapsedTime = Date.now() - splitwatch.startTime;
+// 		const milliseconds = parseInt(elapsedTime % 1000);
+// 		const seconds = parseInt((elapsedTime / 1000) % 60);
+// 		const minutes = parseInt((elapsedTime / (1000 * 60)) % 60);
+// 		const hour = parseInt((elapsedTime / (1000 * 60 * 60)) % 24);
+// 		displayTime(hour, minutes, seconds, milliseconds, splitTime);
+// 	}, 100);
 // }
 
-let start = new Date();
-let current = new Date();
+function displayTime(hour, minutes, seconds, milliseconds, display) {
 
-function startTimer() {
-	
-	let count = +current - +start;
-
-	if (interval > 0) {
-		let temp_0 = count - pauseCount;
-		count = count - temp_0;
-	}
-
-	milliseconds = count % 1000;
-	seconds = Math.floor(count / 1000) % 60;
-	minutes = Math.floor(count / 60000) % 60;
-	hours = Math.floor(count / 3600000) % 24;
-
-	if (milliseconds <= 9) {
-		msCounter.innerHTML = "0" + milliseconds;
-	}
-	if (milliseconds > 9) {
-		msCounter.innerHTML = milliseconds;
-	}
-
-	if (seconds <= 9) {
-		secondsCounter.innerHTML = "0" + seconds;
-	}
-
-	if (seconds > 9) {
-		secondsCounter.innerHTML = seconds;
-	}
-
-	if (minutes <= 9) {
-		minutesCounter.innerHTML = "0" + minutes;
-	}
-
-	if (minutes > 9) {
-		minutesCounter.innerHTML = minutes;
-	}
-
-	if (hours <= 9) {
-		hoursCounter.innerHTML = "0" + hours;
-	} else {
-		hoursCounter.innerHTML = hours;
-	}
-}
-
-function startSplitTimer() {
-	altMilliseconds++;
-
-	if (altMilliseconds <= 9) {
-		altMsCounter.innerHTML = "0" + altMilliseconds;
-	}
-
-	if (altMilliseconds > 9) {
-		altMsCounter.innerHTML = altMilliseconds;
-	}
-
-	if (altMilliseconds > 99) {
-		altMilliseconds = 0;
-		altMsCounter.innerHTML = "0" + altMilliseconds;
-		altSeconds++;
-	}
-
-	if (altSeconds <= 9) {
-		altSecondsCounter.innerHTML = "0" + altSeconds;
-	}
-
-	if (altSeconds > 9) {
-		altSecondsCounter.innerHTML = altSeconds;
-	}
-
-	if (altSeconds > 59) {
-		altSeconds = 0;
-		altMinutes++;
-	}
-
-	if (altMinutes <= 9) {
-		altMinutesCounter.innerHTML = "0" + altMinutes;
-	}
-
-	if (altMinutes > 9) {
-		altMinutesCounter.innerHTML = altMinutes;
-	}
-
-	if (altMinutes > 59) {
-		altMinutes = 0;
-		altHours++;
-	}
-
-	if (altHours <= 9) {
-		altHoursCounter.innerHTML = "0" + altHours;
-	} else {
-		altHoursCounter.innerHTML = altHours;
-	}
-}
-
-function pauseTimer() {
-	let pauseCurrent = new Date();
-	pauseCount = +pauseCurrent - +start;
+	const leadZeroTime = [hour, minutes, seconds, milliseconds].map((display) =>
+		display < 10 ? `0${display}` : display
+	);
+	display.innerHTML = leadZeroTime.join(":");
 }
 
 function stopTimer() {
@@ -334,13 +217,29 @@ function split() {
 	splitTimeInterval = setInterval(startSplitTimer, 10);
 }
 
-function appendsplitToDOM(splitTime, splitType) {
+function appendsplitToDOM(elapsedTime, splitType) {
+	
+	document.getElementById("stopwatchsplits").style.backgroundColor =
+		"white";
+
+	let milliseconds = parseInt(elapsedTime % 1000);
+	let seconds = parseInt((elapsedTime / 1000) % 60);
+	let minutes = parseInt((elapsedTime / (1000 * 60)) % 60);
+	let hour = parseInt((elapsedTime / (1000 * 60 * 60)) % 24);
+	
+	hour = hour < 10 ? `0${hour}` : hour
+	minutes = minutes < 10 ? `0${minutes}` : minutes
+	seconds = seconds < 10 ? `0${seconds}` : seconds
+	milliseconds = milliseconds < 10 ? `0${milliseconds}` : milliseconds
+
+	const splitTime = `${hour}:${minutes}:${seconds}.${milliseconds}`;
+
 	let newsplit = document.createElement("div");
 	newsplit.classList.add("split");
 	newsplit.innerHTML = `
-         <div class="split-index">${splits.length}</div>
-         <div class="split-time">${splitTime}</div>
-		 <div class="split-type">${splitType}</div>
+         <div id="split-index" class="split-index">${stopwatch.intervalId}</div>
+         <div id="split-time" class="split-time">${splitTime}</div>
+		 <div id="split-type" class="split-type">${splitType}</div>
       `;
 	splitsWrapper.appendChild(newsplit);
 	splitsWrapper.scrollTop = splitsWrapper.scrollHeight;
